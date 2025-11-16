@@ -523,7 +523,7 @@
             wallElement.innerHTML = '<p style="text-align: center; color: white;">正在加载祝福...</p>';
             
             try {
-                const response = await fetch('/api/blessings');
+                const response = await fetch('/blessings');
                 if (!response.ok) {
                     throw new Error('无法加载祝福');
                 }
@@ -555,7 +555,7 @@
             submitBtn.textContent = '发送中...';
 
             try {
-                const response = await fetch('/api/blessings', {
+                const response = await fetch('/blessings', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
