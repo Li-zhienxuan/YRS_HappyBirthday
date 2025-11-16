@@ -1,334 +1,475 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>晏如霜 · 生日快乐</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Microsoft YaHei', sans-serif; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-            min-height: 100vh; 
-            overflow-x: hidden; 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .loader { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            z-index: 9999; 
-            transition: opacity 0.5s; 
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
         }
-        .loader-content { 
-            text-align: center; 
-            color: white; 
+
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s;
         }
-        .loader-cake { 
-            font-size: 60px; 
-            animation: bounce 1s infinite; 
+
+        .loader-content {
+            text-align: center;
+            color: white;
         }
-        @keyframes bounce { 
-            0%,100% { transform: translateY(0); } 
-            50% { transform: translateY(-20px); } 
+
+        .loader-cake {
+            font-size: 60px;
+            animation: bounce 1s infinite;
         }
-        .container { 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            padding: 20px; 
-        }
-        .header { 
-            text-align: center; 
-            padding: 40px 0; 
-            color: white; 
-        }
-        .main-title { 
-            font-size: 2.5em; 
-            margin-bottom: 20px; 
-            animation: fadeInDown 1s ease-out; 
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3); 
-        }
-        .subtitle { 
-            font-size: 1.2em; 
-            animation: fadeInUp 1s ease-out 0.5s both; 
-            opacity: 0.9; 
-        }
-        .cake-section { 
-            text-align: center; 
-            padding: 40px 0; 
-            position: relative; 
-        }
-        .cake { 
-            font-size: 80px; 
-            animation: float 3s ease-in-out infinite; 
-            cursor: pointer; 
-            transition: transform 0.3s; 
-        }
-        .cake:hover { 
-            transform: scale(1.1); 
-        }
-        @keyframes float { 
-            0%,100% { transform: translateY(0); } 
-            50% { transform: translateY(-20px); } 
-        }
-        .candles { 
-            position: absolute; 
-            top: 50%; 
-            left: 50%; 
-            transform: translate(-50%, -50%); 
-            display: flex; 
-            gap: 10px; 
-        }
-        .candle { 
-            width: 8px; 
-            height: 30px; 
-            background: #fff; 
-            border-radius: 4px; 
-            position: relative; 
-            animation: flicker 1.5s infinite; 
-        }
-        .candle::before { 
-            content: ''; 
-            position: absolute; 
-            top: -10px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            width: 6px; 
-            height: 10px; 
-            background: #ff6b6b; 
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; 
-            animation: flame 1s infinite; 
-        }
-        @keyframes flicker { 
-            0%,100% { opacity: 1; } 
-            50% { opacity: 0.8; } 
-        }
-        @keyframes flame { 
-            0%,100% { transform: translateX(-50%) scale(1); } 
-            50% { transform: translateX(-50%) scale(1.1); } 
-        }
-        .yanrushuang-section { 
-            background: rgba(255,255,255,0.1); 
-            border-radius: 20px; 
-            padding: 30px; 
-            margin: 30px 0; 
-            text-align: center; 
-            color: white; 
-            backdrop-filter: blur(10px); 
-        }
-        .yanrushuang-title { 
-            font-size: 2em; 
-            margin-bottom: 15px; 
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3); 
-        }
-        .yanrushuang-content { 
-            font-size: 1.1em; 
-            line-height: 1.6; 
-            max-width: 800px; 
-            margin: 0 auto; 
-        }
-        .yanrushuang-poem { 
-            background: rgba(255,255,255,0.1); 
-            border-radius: 15px; 
-            padding: 15px; 
-            margin: 15px 0; 
-            font-style: italic; 
-            border-left: 4px solid #fff; 
-        }
-        .card-section { 
-            display: grid; 
-            grid-template-columns: 1fr; 
-            gap: 20px; 
-            padding: 20px 0; 
-        }
-        @media (min-width: 768px) {
-            .card-section { 
-                grid-template-columns: repeat(3, 1fr); 
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
             }
         }
-        .card { 
-            background: white; 
-            border-radius: 20px; 
-            padding: 25px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
-            transition: transform 0.3s; 
-            animation: fadeIn 1s ease-out; 
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
         }
-        .card:hover { 
-            transform: translateY(-5px); 
+
+        .header {
+            text-align: center;
+            padding: 40px 0;
+            color: white;
         }
-        .card-icon { 
-            font-size: 35px; 
-            margin-bottom: 10px; 
-            text-align: center; 
+
+        .main-title {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            animation: fadeInDown 1s ease-out;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
-        .card-title { 
-            font-size: 1.4em; 
-            color: #764ba2; 
-            margin-bottom: 8px; 
-            text-align: center; 
+
+        .subtitle {
+            font-size: 1.2em;
+            animation: fadeInUp 1s ease-out 0.5s both;
+            opacity: 0.9;
         }
-        .card-content { 
-            color: #666; 
-            line-height: 1.5; 
-            text-align: center; 
+
+        .cake-section {
+            text-align: center;
+            padding: 40px 0;
+            position: relative;
         }
-        .blessing-form { 
-            background: white; 
-            border-radius: 20px; 
-            padding: 30px; 
-            margin: 30px 0; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
-        }
-        .form-title { 
-            text-align: center; 
-            font-size: 1.8em; 
-            color: #764ba2; 
-            margin-bottom: 20px; 
-        }
-        .form-group { 
-            margin-bottom: 15px; 
-        }
-        .form-label { 
-            display: block; 
-            margin-bottom: 6px; 
-            color: #333; 
-            font-weight: bold; 
-        }
-        .form-input, .form-textarea { 
-            width: 100%; 
-            padding: 12px; 
-            border: 2px solid #e0e0e0; 
-            border-radius: 10px; 
-            font-size: 16px; 
-            transition: border-color 0.3s; 
-        }
-        .form-input:focus, .form-textarea:focus { 
-            outline: none; 
-            border-color: #764ba2; 
-        }
-        .form-textarea { 
-            resize: vertical; 
-            min-height: 80px; 
-        }
-        .submit-btn { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-            color: white; 
-            border: none; 
-            padding: 12px 30px; 
-            border-radius: 30px; 
-            font-size: 16px; 
-            cursor: pointer; 
-            transition: transform 0.3s; 
-            display: block; 
-            margin: 0 auto; 
-        }
-        .submit-btn:hover { 
-            transform: translateY(-2px); 
-        }
-        .blessing-wall { 
-            padding: 20px 0; 
-        }
-        .wall-title { 
-            text-align: center; 
-            font-size: 1.8em; 
-            color: white; 
-            margin-bottom: 20px; 
-        }
-        .blessing-item { 
-            background: rgba(255,255,255,0.9); 
-            border-radius: 15px; 
-            padding: 15px; 
-            margin-bottom: 12px; 
-            animation: slideIn 0.5s ease-out; 
-        }
-        .blessing-author { 
-            font-weight: bold; 
-            color: #764ba2; 
-            margin-bottom: 8px; 
-        }
-        .blessing-content { 
-            color: #666; 
-            line-height: 1.5; 
-        }
-        .music-player { 
-            position: fixed; 
-            bottom: 20px; 
-            left: 20px; 
-            background: rgba(255,255,255,0.9); 
-            border-radius: 10px; 
-            padding: 10px; 
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3); 
-            z-index: 1000; 
+
+        .cake {
+            font-size: 80px;
+            animation: float 3s ease-in-out infinite;
+            cursor: pointer;
             transition: transform 0.3s;
         }
+
+        .cake:hover {
+            transform: scale(1.1);
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .candles {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .candle {
+            width: 8px;
+            height: 30px;
+            background: #fff;
+            border-radius: 4px;
+            position: relative;
+            animation: flicker 1.5s infinite;
+        }
+
+        .candle::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 10px;
+            background: #ff6b6b;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            animation: flame 1s infinite;
+        }
+
+        @keyframes flicker {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes flame {
+
+            0%,
+            100% {
+                transform: translateX(-50%) scale(1);
+            }
+
+            50% {
+                transform: translateX(-50%) scale(1.1);
+            }
+        }
+
+        .yanrushuang-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .yanrushuang-title {
+            font-size: 2em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .yanrushuang-content {
+            font-size: 1.1em;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .yanrushuang-poem {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+            margin: 15px 0;
+            font-style: italic;
+            border-left: 4px solid #fff;
+        }
+
+        .card-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        @media (min-width: 768px) {
+            .card-section {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-icon {
+            font-size: 35px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .card-title {
+            font-size: 1.4em;
+            color: #764ba2;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .card-content {
+            color: #666;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .blessing-form {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-title {
+            text-align: center;
+            font-size: 1.8em;
+            color: #764ba2;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #764ba2;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .blessing-wall {
+            padding: 20px 0;
+        }
+
+        .wall-title {
+            text-align: center;
+            font-size: 1.8em;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .blessing-item {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 12px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .blessing-author {
+            font-weight: bold;
+            color: #764ba2;
+            margin-bottom: 8px;
+        }
+
+        .blessing-content {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .music-player {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            transition: transform 0.3s;
+        }
+
         .music-player:hover {
             transform: scale(1.05);
         }
-        .music-player iframe { 
-            border-radius: 5px; 
+
+        .music-player iframe {
+            border-radius: 5px;
         }
-        .firework { 
-            position: fixed; 
-            pointer-events: none; 
-            z-index: 9999; 
+
+        .firework {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
         }
-        .firework-particle { 
-            position: absolute; 
-            width: 4px; 
-            height: 4px; 
-            border-radius: 50%; 
-            animation: explode 1s ease-out forwards; 
+
+        .firework-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            animation: explode 1s ease-out forwards;
         }
-        @keyframes explode { 
-            0% { transform: translate(0,0); opacity: 1; } 
-            100% { opacity: 0; } 
+
+        @keyframes explode {
+            0% {
+                transform: translate(0, 0);
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+            }
         }
-        @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(20px); } 
-            to { opacity: 1; transform: translateY(0); } 
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        @keyframes fadeInDown { 
-            from { opacity: 0; transform: translateY(-20px); } 
-            to { opacity: 1; transform: translateY(0); } 
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        @keyframes fadeInUp { 
-            from { opacity: 0; transform: translateY(20px); } 
-            to { opacity: 1; transform: translateY(0); } 
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        @keyframes slideIn { 
-            from { opacity: 0; transform: translateX(-20px); } 
-            to { opacity: 1; transform: translateX(0); } 
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
-        @keyframes floatUp { 
-            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 
-            100% { transform: translate(-50%, -100px) scale(1.2); opacity: 0; } 
+
+        @keyframes floatUp {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(-50%, -100px) scale(1.2);
+                opacity: 0;
+            }
         }
+
         .music-notice {
             position: fixed;
             bottom: 90px;
             left: 20px;
-            background: rgba(255,255,255,0.9);
+            background: rgba(255, 255, 255, 0.9);
             border-radius: 10px;
             padding: 10px 15px;
             font-size: 14px;
             color: #764ba2;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
             z-index: 1000;
             animation: pulse 2s infinite;
         }
+
         @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="loader" id="loader">
         <div class="loader-content">
@@ -413,48 +554,52 @@
         点击页面任意位置启用生日音乐 🎵
     </div>
     <div class="music-player" id="musicPlayer" style="display: none;">
-        <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="280" height="86" 
-                src="//music.163.com/outchain/player?type=2&id=2624235389&auto=0&height=66"></iframe>
+        <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="280" height="86"
+            src="//music.163.com/outchain/player?type=2&id=2624235389&auto=0&height=66"></iframe>
     </div>
 
     <script>
-        // 加载动画
-        window.addEventListener('load', function() {
+        // --- 动态页面逻辑 (带永久存储) ---
+
+        // 加载动画 (保持不变)
+        window.addEventListener('load', function () {
             setTimeout(() => {
                 document.getElementById('loader').style.opacity = '0';
                 setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
             }, 1000);
 
-            // 页面加载时，尝试从后端获取祝福
+            // 页面加载时，现在尝试从 Pages Function (KV) 获取祝福
             loadBlessings();
         });
 
-        // 音乐自动播放处理
+        // ... (音乐和烟花代码保持不变) ...
+
+        // 音乐自动播放处理 (保持不变)
         let musicInitialized = false;
-        
+
         function initMusicPlayer() {
             if (musicInitialized) return;
-            
+
             // 显示播放器
             document.getElementById('musicPlayer').style.display = 'block';
             document.getElementById('musicNotice').style.display = 'none';
-            
+
             // 重新加载播放器并启用自动播放
             const iframe = document.querySelector('.music-player iframe');
             const currentSrc = iframe.src;
             // 修改参数 auto=0 为 auto=1
             iframe.src = currentSrc.replace('auto=0', 'auto=1');
-            
+
             musicInitialized = true;
         }
-        
+
         // 点击页面任意位置启用音乐
-        document.addEventListener('click', function() {
+        document.addEventListener('click', function () {
             initMusicPlayer();
         });
-        
+
         // 蛋糕点击烟花+祝福
-        document.getElementById('birthdayCake').addEventListener('click', function() {
+        document.getElementById('birthdayCake').addEventListener('click', function () {
             createFirework();
             const blessings = [
                 '晏如霜生日快乐！🎉',
@@ -467,20 +612,18 @@
             const floatingText = document.createElement('div');
             floatingText.textContent = randomBlessing;
             floatingText.style.cssText = `
-                position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-                font-size: 2em; color: white; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-                animation: floatUp 2s ease-out forwards; z-index: 10000; pointer-events: none;
-            `;
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 2em; color: white; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: floatUp 2s ease-out forwards; z-index: 10000; pointer-events: none;
+        `;
             document.body.appendChild(floatingText);
             setTimeout(() => floatingText.remove(), 2000);
-            
-            // 确保音乐已初始化
+
             initMusicPlayer();
         });
 
-        // 烟花效果 (保持不变)
+        // 烟花效果
         function createFirework() {
-            // ... (烟花代码保持不变) ...
             const firework = document.createElement('div');
             firework.className = 'firework';
             firework.style.left = Math.random() * window.innerWidth + 'px';
@@ -501,10 +644,9 @@
             setTimeout(() => firework.remove(), 1000);
         }
 
-        // --- 祝福墙动态逻辑 (核心修正) ---
-
+        // HTML 转义函数
         function escapeHTML(str) {
-            return str.replace(/[&<>"']/g, function(match) {
+            return str.replace(/[&<>"']/g, function (match) {
                 return {
                     '&': '&amp;',
                     '<': '&lt;',
@@ -514,34 +656,38 @@
                 }[match];
             });
         }
-        
+
+        // 添加祝福到墙上的函数
         function addBlessingToWall(name, blessing) {
             const blessingItem = document.createElement('div');
             blessingItem.className = 'blessing-item';
             blessingItem.innerHTML = `
-                <div class="blessing-author">${escapeHTML(name)}</div>
-                <div class="blessing-content">${escapeHTML(blessing)}</div>
-            `;
+            <div class="blessing-author">${escapeHTML(name)}</div>
+            <div class="blessing-content">${escapeHTML(blessing)}</div>
+        `;
             document.getElementById('blessingWall').prepend(blessingItem);
         }
-        
+
+        // *** 核心函数：从 KV 加载祝福 ***
         async function loadBlessings() {
             const wallElement = document.getElementById('blessingWall');
             wallElement.innerHTML = '<p style="text-align: center; color: white;">正在加载祝福...</p>';
-            
+
             try {
-                // *** 匹配 _worker.js 中的 /api/blessings 路径 ***
+                // 请求 Pages Function API
                 const response = await fetch('/api/blessings');
-                
+
                 if (!response.ok) {
-                    throw new Error('无法加载祝福 (HTTP Status: ' + response.status + ')');
+                    // 如果 Pages Function 返回非 200 状态码
+                    throw new Error(`HTTP Status: ${response.status}`);
                 }
-                const blessings = await response.json();
-                
-                wallElement.innerHTML = '';
-                
+
+                const blessings = await response.json(); // 预期返回 JSON 数组
+
+                wallElement.innerHTML = ''; // 清空提示
+
                 if (blessings.length === 0) {
-                     wallElement.innerHTML = '<p style="text-align: center; color: white;">还没有祝福，快来做第一个吧！😊</p>';
+                    wallElement.innerHTML = '<p style="text-align: center; color: white;">还没有祝福，快来做第一个吧！😊</p>';
                 } else {
                     blessings.forEach(item => {
                         addBlessingToWall(item.name, item.blessing);
@@ -549,23 +695,28 @@
                 }
             } catch (error) {
                 console.error('加载祝福失败:', error);
-                // ** 再次显示加载失败，便于用户确认 **
-                wallElement.innerHTML = '<p style="text-align: center; color: white;">祝福加载失败... 😔 (' + error.message + ')</p>';
+                // 显示加载失败信息，提醒用户检查配置
+                wallElement.innerHTML = `<p style="text-align: center; color: white;">祝福加载失败... 😔 请检查 Pages Function 和 KV 绑定是否正确。(${error.message})</p>`;
             }
         }
-        
-        document.getElementById('blessingForm').addEventListener('submit', async function(e) {
+
+        // *** 核心函数：提交祝福到 KV ***
+        document.getElementById('blessingForm').addEventListener('submit', async function (e) {
             e.preventDefault();
-            
-            const name = document.getElementById('name').value;
-            const blessing = document.getElementById('blessing').value;
+
+            const name = document.getElementById('name').value.trim();
+            const blessing = document.getElementById('blessing').value.trim();
             const submitBtn = this.querySelector('.submit-btn');
-            
+
+            if (!name || !blessing) {
+                alert("名字和祝福内容不能为空！");
+                return;
+            }
+
             submitBtn.disabled = true;
             submitBtn.textContent = '发送中...';
 
             try {
-                // *** 匹配 _worker.js 中的 /api/blessings 路径 ***
                 const response = await fetch('/api/blessings', {
                     method: 'POST',
                     headers: {
@@ -575,29 +726,29 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error('网络响应不佳 (HTTP Status: ' + response.status + ')');
+                    throw new Error(`HTTP Status: ${response.status}`);
                 }
 
-                alert('祝福发送成功！');
-                
-                // 乐观更新：在前端立即显示新祝福
+                // 成功后，乐观更新（立即在前端显示）
                 const wallElement = document.getElementById('blessingWall');
+                // 移除“还没有祝福”的提示
                 if (wallElement.querySelector('p')) {
-                     wallElement.innerHTML = '';
+                    wallElement.innerHTML = '';
                 }
                 addBlessingToWall(name, blessing);
                 this.reset(); // 清空表单
+                alert('祝福发送成功，并已永久保存！');
 
             } catch (error) {
                 console.error('提交祝福失败:', error);
-                alert('抱歉，祝福发送失败，请检查控制台错误。');
+                alert(`抱歉，祝福发送失败，请检查 Pages Function 和 KV 绑定。(${error.message})`);
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = '发送祝福';
+                initMusicPlayer();
             }
-            
-            initMusicPlayer();
         });
     </script>
 </body>
+
 </html>
