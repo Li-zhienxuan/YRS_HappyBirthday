@@ -1,4 +1,4 @@
-// --- 把下面所有代码复制到你的 Worker ---
+// --- functions/api/blessings.js 的内容 ---
 
 // CORS 预检请求和响应头，允许你的网页访问
 const corsHeaders = {
@@ -16,26 +16,27 @@ export default {
 
     const url = new URL(request.url);
 
-    // 只响应 /api/blessings 这一个路径
-    if (url.pathname !== "/api/blessings") {
-      return new Response("Not found", { status: 404 });
+    // Pages Function 应该只处理 /api/blessings 这个路径
+    if (!url.pathname.endsWith("/api/blessings")) {
+      // 如果不是这个路径，交给 Pages 处理静态文件 (index.html)
+      return env.ASSETS.fetch(request);
     }
-    
-    // --- 关键：确保你绑定了名为 BIRTHDAY_BLESSINGS 的 KV ---
+
+    // --- 关键：使用绑定的 KV 变量 ---
     const KV = env.BIRTHDAY_BLESSINGS;
     if (!KV) {
-        return new Response("KV Namespace not bound", { status: 500 });
+      return new Response("KV Namespace not bound", { status: 500 });
     }
 
     // 处理“获取祝福”的请求 (GET)
     if (request.method === "GET") {
-      // 从KV中读取"all_blessings"这个键的值，我们假设它是一个JSON字符串
+      // 从KV中读取"all_blessings"这个键的值
       const data = await KV.get("all_blessings", { type: "json" });
-      
-      // 如果还没有数据（比如第一次），返回一个空数组
+
+      // 如果还没有数据，返回一个空数组
       const blessings = data || [];
-      
-      // 返回 JSON 数据，并带上CORS头
+
+      // 返回 JSON 数据
       return new Response(JSON.stringify(blessings), {
         headers: {
           ...corsHeaders,
@@ -49,24 +50,27 @@ export default {
       try {
         // 1. 读取旧数据
         const oldBlessings = (await KV.get("all_blessings", { type: "json" })) || [];
-        
+
         // 2. 获取新提交的祝福
         const newBlessing = await request.json();
 
-        // 3. 把新祝福加到数组里 (加在最前面，实现倒序)
+        if (!newBlessing.name || !newBlessing.blessing) {
+          return new Response("Missing name or blessing", { status: 400, headers: corsHeaders });
+        }
+
+        // 3. 把新祝福加到数组里 (加在最前面)
         oldBlessings.unshift(newBlessing);
 
         // 4. 把更新后的完整数组存回KV
-        // 注意：KV的 .put() 是覆盖写入
         await KV.put("all_blessings", JSON.stringify(oldBlessings));
-        
+
         // 5. 返回成功
         return new Response(JSON.stringify({ success: true }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
 
       } catch (e) {
-        return new Response(e.message, { status: 500, headers: corsHeaders });
+        return new Response(`Error: ${e.message}`, { status: 500, headers: corsHeaders });
       }
     }
 
@@ -74,5 +78,3 @@ export default {
     return new Response("Method not allowed", { status: 405, headers: corsHeaders });
   },
 };
-
-// --- 代码结束 ---

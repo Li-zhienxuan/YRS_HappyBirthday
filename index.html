@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>晏如霜 · 生日快乐</title>
     <style>
-        /* [--- 你的所有CSS样式保持不变 ---] */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: 'Microsoft YaHei', sans-serif; 
@@ -257,8 +256,7 @@
             color: #666; 
             line-height: 1.5; 
         }
-        
-        /* --- CSS 修改 (音乐) --- */
+        /* --- CSS 修改 (音乐播放器隐藏) --- */
         .music-player { 
             position: absolute; /* 绝对定位 */
             left: -9999px; /* 移出屏幕外 */
@@ -400,7 +398,8 @@
         <section class="blessing-wall">
             <h2 class="wall-title">晏如霜的祝福墙</h2>
             <div id="blessingWall">
-                </div>
+                <p style="text-align: center; color: white;">正在加载祝福...</p>
+            </div>
         </section>
     </div>
 
@@ -420,7 +419,6 @@
                 setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
             }, 1000);
 
-            // --- JS 修改 (祝福墙) ---
             // 页面加载时，尝试从后端获取祝福
             loadBlessings();
         });
@@ -431,21 +429,24 @@
         function initMusicPlayer() {
             if (musicInitialized) return;
             
-            // --- JS 修改 (音乐) ---
-            // 删除了 .style.display = 'block'，因为播放器现在被CSS永久隐藏。
+            // 隐藏提示
             document.getElementById('musicNotice').style.display = 'none';
             
+            // 重新加载播放器并启用自动播放
             const iframe = document.querySelector('.music-player iframe');
             const currentSrc = iframe.src;
+            // 修改参数 auto=0 为 auto=1
             iframe.src = currentSrc.replace('auto=0', 'auto=1');
             
             musicInitialized = true;
         }
         
+        // 点击页面任意位置启用音乐
         document.addEventListener('click', function() {
             initMusicPlayer();
         });
         
+        // 蛋糕点击烟花+祝福
         document.getElementById('birthdayCake').addEventListener('click', function() {
             createFirework();
             const blessings = [
@@ -466,11 +467,12 @@
             document.body.appendChild(floatingText);
             setTimeout(() => floatingText.remove(), 2000);
             
+            // 确保音乐已初始化
             initMusicPlayer();
         });
 
+        // 烟花效果
         function createFirework() {
-            // [--- 烟花代码不变 ---]
             const firework = document.createElement('div');
             firework.className = 'firework';
             firework.style.left = Math.random() * window.innerWidth + 'px';
@@ -491,21 +493,10 @@
             setTimeout(() => firework.remove(), 1000);
         }
 
-        // --- JS 修改 (祝福墙) ---
-        // 'addBlessingToWall' 函数被提取出来，以便重用
-        function addBlessingToWall(name, blessing) {
-            const blessingItem = document.createElement('div');
-            blessingItem.className = 'blessing-item';
-            blessingItem.innerHTML = `
-                <div class="blessing-author">${escapeHTML(name)}</div>
-                <div class="blessing-content">${escapeHTML(blessing)}</div>
-            `;
-            document.getElementById('blessingWall').prepend(blessingItem);
-        }
-        
-        // --- JS 新增 (祝福墙) ---
-        // 防止XSS攻击的辅助函数
+        // --- 祝福墙动态逻辑 ---
+
         function escapeHTML(str) {
+            // 防止XSS攻击
             return str.replace(/[&<>"']/g, function(match) {
                 return {
                     '&': '&amp;',
@@ -516,52 +507,54 @@
                 }[match];
             });
         }
-
-        // --- JS 新增 (祝福墙) ---
-        // 从后端加载祝福
+        
+        function addBlessingToWall(name, blessing) {
+            const blessingItem = document.createElement('div');
+            blessingItem.className = 'blessing-item';
+            blessingItem.innerHTML = `
+                <div class="blessing-author">${escapeHTML(name)}</div>
+                <div class="blessing-content">${escapeHTML(blessing)}</div>
+            `;
+            document.getElementById('blessingWall').prepend(blessingItem);
+        }
+        
         async function loadBlessings() {
+            const wallElement = document.getElementById('blessingWall');
+            wallElement.innerHTML = '<p style="text-align: center; color: white;">正在加载祝福...</p>';
+            
             try {
-                // 这是你将要创建的Cloudflare Worker的路由
-                // 在Cloudflare Pages中，/api/* 的请求会自动路由到你的Worker
                 const response = await fetch('/api/blessings');
                 if (!response.ok) {
                     throw new Error('无法加载祝福');
                 }
                 const blessings = await response.json();
                 
-                // 清空祝福墙（以防万一）
-                document.getElementById('blessingWall').innerHTML = '';
+                wallElement.innerHTML = '';
                 
-                // 按顺序（通常是时间倒序）添加祝福
-                // 假设后端返回的数组是 [{name: '...', blessing: '...'}, ...]
-                blessings.forEach(item => {
-                    addBlessingToWall(item.name, item.blessing);
-                });
-
+                if (blessings.length === 0) {
+                     wallElement.innerHTML = '<p style="text-align: center; color: white;">还没有祝福，快来做第一个吧！😊</p>';
+                } else {
+                    blessings.forEach(item => {
+                        addBlessingToWall(item.name, item.blessing);
+                    });
+                }
             } catch (error) {
                 console.error('加载祝福失败:', error);
-                // 即使失败，也添加一个提示，告知用户
-                document.getElementById('blessingWall').innerHTML = '<p style="text-align: center; color: white;">祝福加载失败... 😔</p>';
+                wallElement.innerHTML = '<p style="text-align: center; color: white;">祝福加载失败... 😔</p>';
             }
         }
-
-        // --- JS 修改 (祝福墙) ---
-        // 祝福提交表单的逻辑被完全重写
+        
         document.getElementById('blessingForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const nameInput = document.getElementById('name');
-            const blessingInput = document.getElementById('blessing');
-            const name = nameInput.value;
-            const blessing = blessingInput.value;
+            const name = document.getElementById('name').value;
+            const blessing = document.getElementById('blessing').value;
             const submitBtn = this.querySelector('.submit-btn');
             
-            // 禁用按钮，防止重复提交
             submitBtn.disabled = true;
             submitBtn.textContent = '发送中...';
 
             try {
-                // 这是你将要创建的Cloudflare Worker的路由
                 const response = await fetch('/api/blessings', {
                     method: 'POST',
                     headers: {
@@ -574,10 +567,14 @@
                     throw new Error('网络响应不佳');
                 }
 
-                // 成功！
                 alert('祝福发送成功！');
                 
-                // “乐观更新”：假设后端已成功，立即在前端显示
+                // 乐观更新：在前端立即显示新祝福
+                // 需要先确保清空了“还没有祝福”的提示
+                const wallElement = document.getElementById('blessingWall');
+                if (wallElement.querySelector('p')) {
+                     wallElement.innerHTML = '';
+                }
                 addBlessingToWall(name, blessing);
                 this.reset(); // 清空表单
 
@@ -585,12 +582,10 @@
                 console.error('提交祝福失败:', error);
                 alert('抱歉，祝福发送失败，请稍后再试。');
             } finally {
-                // 无论成功与否，都重新启用按钮
                 submitBtn.disabled = false;
                 submitBtn.textContent = '发送祝福';
             }
             
-            // 确保音乐已初始化
             initMusicPlayer();
         });
     </script>
