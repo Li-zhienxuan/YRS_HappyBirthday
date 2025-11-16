@@ -256,17 +256,23 @@
             color: #666; 
             line-height: 1.5; 
         }
-        /* --- CSS 修改 (音乐播放器隐藏) --- */
         .music-player { 
-            position: absolute; /* 绝对定位 */
-            left: -9999px; /* 移出屏幕外 */
-            top: -9999px;
-            width: 1px; /* 最小化 */
-            height: 1px;
-            opacity: 0; /* 透明 */
-            z-index: 1000;
+            position: fixed; 
+            bottom: 20px; 
+            left: 20px; 
+            background: rgba(255,255,255,0.9); 
+            border-radius: 10px; 
+            padding: 10px; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3); 
+            z-index: 1000; 
+            transition: transform 0.3s;
         }
-        /* [--- 你的其他CSS保持不变 ---] */
+        .music-player:hover {
+            transform: scale(1.05);
+        }
+        .music-player iframe { 
+            border-radius: 5px; 
+        }
         .firework { 
             position: fixed; 
             pointer-events: none; 
@@ -406,7 +412,7 @@
     <div class="music-notice" id="musicNotice">
         点击页面任意位置启用生日音乐 🎵
     </div>
-    <div class="music-player" id="musicPlayer">
+    <div class="music-player" id="musicPlayer" style="display: none;">
         <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="280" height="86" 
                 src="//music.163.com/outchain/player?type=2&id=2624235389&auto=0&height=66"></iframe>
     </div>
@@ -429,7 +435,8 @@
         function initMusicPlayer() {
             if (musicInitialized) return;
             
-            // 隐藏提示
+            // 显示播放器
+            document.getElementById('musicPlayer').style.display = 'block';
             document.getElementById('musicNotice').style.display = 'none';
             
             // 重新加载播放器并启用自动播放
@@ -471,8 +478,9 @@
             initMusicPlayer();
         });
 
-        // 烟花效果
+        // 烟花效果 (保持不变)
         function createFirework() {
+            // ... (烟花代码保持不变) ...
             const firework = document.createElement('div');
             firework.className = 'firework';
             firework.style.left = Math.random() * window.innerWidth + 'px';
@@ -493,10 +501,9 @@
             setTimeout(() => firework.remove(), 1000);
         }
 
-        // --- 祝福墙动态逻辑 ---
+        // --- 祝福墙动态逻辑 (核心修正) ---
 
         function escapeHTML(str) {
-            // 防止XSS攻击
             return str.replace(/[&<>"']/g, function(match) {
                 return {
                     '&': '&amp;',
@@ -523,9 +530,11 @@
             wallElement.innerHTML = '<p style="text-align: center; color: white;">正在加载祝福...</p>';
             
             try {
-                const response = await fetch('/blessings');
+                // *** 匹配 _worker.js 中的 /api/blessings 路径 ***
+                const response = await fetch('/api/blessings');
+                
                 if (!response.ok) {
-                    throw new Error('无法加载祝福');
+                    throw new Error('无法加载祝福 (HTTP Status: ' + response.status + ')');
                 }
                 const blessings = await response.json();
                 
@@ -540,7 +549,8 @@
                 }
             } catch (error) {
                 console.error('加载祝福失败:', error);
-                wallElement.innerHTML = '<p style="text-align: center; color: white;">祝福加载失败... 😔</p>';
+                // ** 再次显示加载失败，便于用户确认 **
+                wallElement.innerHTML = '<p style="text-align: center; color: white;">祝福加载失败... 😔 (' + error.message + ')</p>';
             }
         }
         
@@ -555,7 +565,8 @@
             submitBtn.textContent = '发送中...';
 
             try {
-                const response = await fetch('//api/blessings', {
+                // *** 匹配 _worker.js 中的 /api/blessings 路径 ***
+                const response = await fetch('/api/blessings', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -564,13 +575,12 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error('网络响应不佳');
+                    throw new Error('网络响应不佳 (HTTP Status: ' + response.status + ')');
                 }
 
                 alert('祝福发送成功！');
                 
                 // 乐观更新：在前端立即显示新祝福
-                // 需要先确保清空了“还没有祝福”的提示
                 const wallElement = document.getElementById('blessingWall');
                 if (wallElement.querySelector('p')) {
                      wallElement.innerHTML = '';
@@ -580,7 +590,7 @@
 
             } catch (error) {
                 console.error('提交祝福失败:', error);
-                alert('抱歉，祝福发送失败，请稍后再试。');
+                alert('抱歉，祝福发送失败，请检查控制台错误。');
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = '发送祝福';
